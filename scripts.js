@@ -43,37 +43,89 @@ function playRound(playerSelection, computerSelection) {
     }
 }
 
-// call the playRound function inside this one and play 5 rounds and keep score
-function game() {
-    console.log("Let's play 5 rounds of rock paper scissors")
+const rockBtn = document.querySelector('.rock');
+const paperBtn = document.querySelector('.paper');
+const scissorBtn = document.querySelector('.scissors');
 
-    let round = 1;
-    let playerWins= 0;
-    let compWins = 0;
-    let ties = 0;
+rockBtn.onclick = () => {
+    //console.log(playRound("rock", getComputerChoice()));
+    calculateResults(playRound("rock", getComputerChoice()));
+}
+paperBtn.onclick = () => calculateResults(playRound("paper", getComputerChoice()));
+scissorBtn.onclick = () => calculateResults(playRound("scissors", getComputerChoice()));
 
-    for (let i = 0; i < 5; i++) {
-        console.log(`Round ${round}`);
+let round = 1;
+let playerWins= 0;
+let compWins = 0;
+let ties = 0;
 
-        let playerChoice = prompt("Type in your choice (rock, paper, scissors):");
-        let computerChoice = getComputerChoice();
+const resultsSection = document.querySelector('.results');
 
-        let result = playRound(playerChoice, computerChoice);
-        if (result.includes("win")) {
-            playerWins++;
-        }
-        else if (result.includes("lose")) {
-            compWins++;
-        }
-        else if (result.includes("tie")) {
-            ties++;
-        }
-        else {
-            // do nothing
-        }
+function calculateResults(roundResults) {
+
+    while (resultsSection.firstChild) {
+        resultsSection.removeChild(resultsSection.firstChild);
+    }
+
+    let roundCount = document.createElement('p');
+    roundCount.innerHTML = `Round ${round}`;
+    roundCount.style.fontWeight = "bold";
+    resultsSection.appendChild(roundCount);
+
+    if (roundResults.includes("win")) {
+        playerWins++;
+    }
+    else if (roundResults.includes("lose")) {
+        compWins++;
+    }
+    else if (roundResults.includes("tie")) {
+        ties++;
+    }
+    else {
+        // do nothing
+    }
+
+    round++;
+
+    let resultsMessage = document.createElement('p');
+    resultsMessage.innerHTML = roundResults;
+    resultsSection.appendChild(resultsMessage);
+    //console.log(roundResults);
+
+    let scoreTitle = document.createElement('p');
+    scoreTitle.innerHTML = "Score";
+    scoreTitle.style.fontWeight = "bold";
+    resultsSection.appendChild(scoreTitle);
+    //console.log(`Score`);
+
+    let scoreResults = document.createElement('p');
+    scoreResults.innerHTML = `Player: ${playerWins} Computer: ${compWins} Ties: ${ties}`;
+    resultsSection.appendChild(scoreResults);
+    //console.log(`Player: ${playerWins} Computer: ${compWins} Ties: ${ties}`);
+
+    // check if there is a winner (player or comp score > 5)
+    let finalResults = document.createElement('p');
+
+    if (playerWins >= 5) {
+        finalResults.innerHTML = "Congradulations! You won the game!";
+        finalResults.style.color = "green";
+        resultsSection.appendChild(finalResults);
+
+        playerWins = 0;
+        compWins = 0;
+        ties = 0;
+        round = 1;
+    } 
+    else if (compWins >= 5) {
+        finalResults.innerHTML = "Too bad, you lost the game :(";
+        finalResults.style.color = "red";
+        resultsSection.appendChild(finalResults);
         
-        console.log(result);
-        console.log(`Score`);
-        console.log(`Player: ${playerWins} Computer: ${compWins} Ties: ${ties}`);
+        playerWins = 0;
+        compWins = 0;
+        ties = 0;
+        round = 1;
     }
 }
+
+
